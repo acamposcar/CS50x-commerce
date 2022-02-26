@@ -15,7 +15,7 @@ class Category(models.Model):
 
 class Listing(models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=500)
+    description = models.TextField ()
     starting_bid = models.FloatField()
     image_url = models.URLField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categ",  blank=True, null=True)
@@ -24,6 +24,9 @@ class Listing(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+    
+    def descripton_firts_p(self):
+        return self.description.split('\n')[0]
 
 
 class Comment(models.Model):

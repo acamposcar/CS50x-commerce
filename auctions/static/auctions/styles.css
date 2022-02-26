@@ -14,3 +14,7 @@ body {
 li.media{
     margin-bottom: 20px;
 }
+
+.img-fluid{
+    max-height: 300px;
+}

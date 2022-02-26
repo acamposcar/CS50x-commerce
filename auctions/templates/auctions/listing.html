@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    
+        <div class="d-flex justify-content-center">
+            <img src="{{listing.image_url}}" class="img-fluid " alt="">
+        </div>
+        <div>
+            <h2>{{ listing.title }}</h2>
+          <p>{{ listing.description|linebreaks }}</p>
+          <h3><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h3>
+          <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+        </div>
+    
+        <h3>Comments</h3>
+    {% for comment in comments %}
+    <div>
+        <p>{{comment.comment}}</p>
+        <!-- <p class="small">Created by {{ comment.user }} on {{ comment.date }}</p> -->
+    </div>
+    {% endfor %}
+    
+
+    </ul>
+    
+{% endblock %}
