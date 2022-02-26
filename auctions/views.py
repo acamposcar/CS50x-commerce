@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .forms import forms
+from .forms import CreateListing, CreateComment
 from .models import User, Listing, Comment, Bid, Category
 
 
@@ -15,14 +15,31 @@ def index(request):
 
 
 def listing_view(request, listing_id):
-    try:
-        listing = Listing.objects.get(id=listing_id)
-    except Listing.DoesNotExist:
-        raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "comments": listing.comments.all(),
-    })
+    if request.method == "POST":
+        form = CreateComment(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            content = form.cleaned_data["content"]
+            user = User.objects.get(pk=request.user.id)
+            listing = Listing.objects.get(pk=listing_id)
+            comment = Comment(content = content, user = user, listing = listing)
+            comment.save()
+            return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
+        else:
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+                "comments": listing.comments.all(),
+                "comment_form": form
+        })
+    else:
+        try:
+            listing = Listing.objects.get(id=listing_id)
+        except Listing.DoesNotExist:
+            raise Http404("Listing not found.")
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "comments": listing.comments.all(),
+            "comment_form": CreateComment()
+        })
 
 
 def login_view(request):
@@ -79,10 +96,32 @@ def register(request):
 
 @login_required(login_url=login_view)
 def new(request):
-    return render(request, "auctions/new.html", {
-            "form": forms.createListing(),
-            "message": ""
-        })
+    if request.method == "POST":
+        form = CreateListing(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            starting_bid = form.cleaned_data["starting_bid"]
+            user = User.objects.get(pk=request.user.id)
+            image_url = form.cleaned_data["image"]
+            category = Category.objects.get(category=form.cleaned_data["category"])
+
+            listing = Listing(title = title, description = description,
+            starting_bid = starting_bid,image_url = image_url, 
+            category = category, user = user)
+
+            listing.save()
+            return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
+        else:
+            return render(request, "auctions/new.html", {
+                "form": form
+            })
+
+        
+    else:
+        return render(request, "auctions/new.html", {
+                "form": CreateListing(),
+            })
 
 
 def categories(request):
