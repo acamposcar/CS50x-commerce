@@ -1,7 +1,23 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+<ul class="list-unstyled">
+    {% for listing in listings %}
+    <li class="media">
+        <img src="{{listing.image_url}}" class="mr-3 img-thumbnail" alt="">
+        <div class="media-body">
+            <a href="{% url 'listing_view' listing.id %}">
+                <h5 class="mt-0 mb-1">{{ listing.title }}</h5>
+            </a>
+        
+          <p>{{ listing.description }}</p>
+          <h3><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h3>
+          <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+        </div>
+    </li>
+    {% endfor %}
+    
 
-    TODO
+    </ul>
+    
 {% endblock %}

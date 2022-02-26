@@ -3,11 +3,18 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .forms import forms
+from .models import User, Listing, Comment, Bid, Category
 
 
 def index(request):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()})
+
+
+def listing_view(request, listing_id):
     return render(request, "auctions/index.html")
 
 
@@ -61,3 +68,21 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+@login_required(login_url=login_view)
+def new(request):
+    return render(request, "auctions/new.html", {
+            "form": forms.createListing(),
+            "message": ""
+        })
+
+
+def categories(request):
+    pass
+
+
+def watchlist(request):
+    pass
+
+
