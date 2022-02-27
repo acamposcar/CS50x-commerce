@@ -6,13 +6,18 @@ body {
     background-color:#dcdee0;
 }
 
-.img-thumbnail{
-    height: 200px;
-    width: 200px;
+.thumbnail{
+    height: 150px;
+    width: 150px;
+    padding-right: 10px;
 }
 
 li.media{
-    margin-bottom: 20px;
+    margin: 20px;
+    padding: 20px;
+    border-style: solid;
+    border-width: thin;
+    border-color:   rgb(226, 226, 226);
 }
 
 .img-fluid{

@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .forms import CreateListing, CreateComment
-from .models import User, Listing, Comment, Bid, Category
+from .models import User, Listing, Comment, Bid, Category, Watchlist
 
 
 def index(request):
@@ -15,30 +15,41 @@ def index(request):
 
 
 def listing_view(request, listing_id):
+
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        raise Http404("Listing not found.")
+
+    comments = listing.comments.all()
+
+    
+    if request.user.is_authenticated:
+        on_watchlist = listing.watchlist_listing.filter(user=request.user.id).exists()
+    else:
+        on_watchlist = False
+
     if request.method == "POST":
         form = CreateComment(request.POST)
         if form.is_valid() and request.user.is_authenticated:
             content = form.cleaned_data["content"]
             user = User.objects.get(pk=request.user.id)
-            listing = Listing.objects.get(pk=listing_id)
             comment = Comment(content = content, user = user, listing = listing)
             comment.save()
             return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
         else:
             return render(request, "auctions/listing.html", {
                 "listing": listing,
-                "comments": listing.comments.all(),
-                "comment_form": form
+                "comments": comments,
+                "comment_form": form,
+                "on_watchlist": on_watchlist
         })
     else:
-        try:
-            listing = Listing.objects.get(id=listing_id)
-        except Listing.DoesNotExist:
-            raise Http404("Listing not found.")
         return render(request, "auctions/listing.html", {
             "listing": listing,
-            "comments": listing.comments.all(),
-            "comment_form": CreateComment()
+            "comments": comments,
+            "comment_form": CreateComment(),
+            "on_watchlist": on_watchlist
         })
 
 
@@ -128,7 +139,33 @@ def categories(request):
     pass
 
 
+@login_required(login_url=login_view)
 def watchlist(request):
-    pass
+    user_id = request.user.id
+
+    if request.method == "POST":
+
+        add_watchlist = request.POST['add_watchlist']
+        
+        listing_id = request.POST['listing_id']
+
+        user = User.objects.get(pk=user_id)
+        listing = Listing.objects.get(pk=listing_id)
+
+        if add_watchlist == "True":
+            watchlist = Watchlist(user=user, listing=listing)
+            watchlist.save()
+        else:
+            Watchlist.objects.filter(user=user, listing=listing).delete()
+        
+        return HttpResponseRedirect(reverse("watchlist"))
+
+    else:
+        watchlist_listing_ids = User.objects.get(pk=request.user.id).watchlist_user.values_list("listing")
+        listings = Listing.objects.filter(id__in=watchlist_listing_ids, closed=False)
+
+        return render(request, "auctions/watchlist.html", {
+            "listings": listings})
 
 
+ 

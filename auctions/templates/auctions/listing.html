@@ -6,11 +6,30 @@
         <div class="d-flex justify-content-center">
             <img src="{{listing.image_url}}" class="img-fluid " alt="">
         </div>
+
         <div>
             <h2>{{ listing.title }}</h2>
-          <p>{{ listing.description|linebreaks }}</p>
-          <h3><span class="badge badge-warning">Price: ${{ listing.starting_bid }}</span></h3>
-          <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+            <p>{{ listing.description|linebreaks }}</p>
+            <h3><span class="badge badge-warning">Price: ${{ listing.starting_bid }}</span></h3>
+          
+            <!-- Watchlist button -->
+            {% if user.is_authenticated and user.id != listing.user.id %}
+            <form action="{% url 'watchlist' %}" method="post">
+                {% csrf_token %}
+                {% if on_watchlist %}
+                <input class="btn btn-primary" type="submit" value="Remove from watchlist">  
+                <input type="hidden" name="add_watchlist" value="False">
+
+                {% else %}
+
+                <input class="btn btn-primary" type="submit" value="Add to watchlist">
+                <input type="hidden" name="add_watchlist" value="True">
+                {% endif %}
+
+                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            </form>
+            {% endif %}
+            <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
         </div>
 
         <hr>
@@ -26,7 +45,7 @@
             </div>
         </form>
         {% else %}
-            <div class="alert alert -warning">
+            <div class="alert alert-warning">
              Log in to write a comment
             </div>
         {% endif %}

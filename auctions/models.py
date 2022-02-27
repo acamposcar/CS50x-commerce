@@ -10,6 +10,10 @@ class Category(models.Model):
 
     def __str__(self):
         return f"{self.category}"
+    
+    class Meta:
+        # If this isn’t given, Django will use verbose_name + "s". So in this case it would show Categorys
+        verbose_name_plural = "Categories"
 
 
 class Listing(models.Model):
@@ -20,6 +24,7 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listing_category",  blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_author")
     date = models.DateTimeField(auto_now_add=True)
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title}"
@@ -44,3 +49,11 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"{self.listing}: {self.bid}"
+
+
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist_user")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlist_listing")
+
+    def __str__(self):
+        return f"{self.user}: {self.listing}"

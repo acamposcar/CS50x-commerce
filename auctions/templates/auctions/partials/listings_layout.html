@@ -1,0 +1,24 @@
+<ul class="list-unstyled">
+
+    {% for listing in listings %}
+    <li class="media">
+
+        <div class="thumbnail">
+            <img src="{{listing.image_url}}" class="mr-3 img-thumbnail" alt="">
+        </div>
+        <div class="media-body">
+            <a href="{% url 'listing_view' listing.id %}">
+                <h5 class="mt-0 mb-1">{{ listing.title }}</h5>
+            </a>
+          <p>{{ listing.descripton_firts_p }}</p>
+          <h3><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h3>
+          <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+        </div>
+    </li>
+    {% empty %}
+    <div class="alert alert-warning">
+        No listings found
+       </div>
+    {% endfor %}
+    
+</ul>
