@@ -12,7 +12,7 @@ from .models import User, Listing, Comment, Bid, Category, Watchlist
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()})
+        "listings": Listing.objects.filter(closed = False)})
 
 
 def listing_view(request, listing_id):
@@ -31,7 +31,6 @@ def listing_view(request, listing_id):
     except IndexError:
         bid_price = 0
         bid_user=""
-
 
 
     if bid_price == None or listing.starting_bid > bid_price:
@@ -124,6 +123,26 @@ def register(request):
 
 
 @login_required(login_url=login_view)
+def close_listing(request, listing_id):
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        listing_owner = listing.user.id
+
+        if listing_owner == request.user.id:
+            if listing.closed == False:
+                listing.closed = True
+                listing.save()
+            else:
+                listing.closed = False
+                listing.save()
+            return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
+    
+    return HttpResponse("Error 405: Not available")
+
+
+
+
+@login_required(login_url=login_view)
 def new(request):
     if request.method == "POST":
         form = CreateListing(request.POST)
@@ -187,10 +206,16 @@ def watchlist(request):
 
 
 def categories(request):
-    # TODO
-    listings = Listing.objects.filter(category=1)
-
+    
+    categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
+        "categories": categories})
+
+
+def category_listings(request, category):
+
+    listings = Listing.objects.filter(category__category = category)
+    return render(request, "auctions/index.html", {
         "listings": listings})
 
 

@@ -2,6 +2,13 @@
 
 {% block body %}
 
-{% include "auctions/partials/listings_layout.html" %}
-    
+<ul>
+    {% for category in categories %}
+    <li>
+        <a href="{% url 'category_listings' category %}">{{ category }}</a>
+    </li>
+    {% endfor %}
+
+
+</ul>    
 {% endblock %}

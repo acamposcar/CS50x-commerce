@@ -40,6 +40,22 @@
                 
             </form>
             {% endif %}
+
+            {% if listing.closed == True %}
+                <div class="alert alert-danger">Listing closed. Buyer: {{ bid_user }}</div>
+            {% endif %}
+
+            {% if user.is_authenticated and user.id == listing.user.id %}
+            <form action="{% url 'close_listing' listing.id %}" method="post">
+                {% csrf_token %}
+                {% if listing.closed == False %}
+                <input class="btn btn-primary" type="submit" value="Close Listing">
+                {% else %}
+                <input class="btn btn-primary" type="submit" value="Open Listing">
+                {% endif %}
+            </form>
+            {% endif %}
+
             <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
         </div>
 
