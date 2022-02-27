@@ -2,7 +2,14 @@
 
 {% block body %}
 
-    
+        {% if listing.closed == True %}
+        {% if user.is_authenticated and user.id == bid_user.id %}
+        <div class="alert alert-success"><h3>You won the bid!</h3></div>
+        {% else %}
+        <div class="alert alert-danger"><h3>Listing closed. Buyer: {{ bid_user }}</h3></div>
+        {% endif %}
+        {% endif %}
+
         <div class="d-flex justify-content-center">
             <img src="{{listing.image_url}}" class="img-fluid " alt="">
         </div>
@@ -14,7 +21,7 @@
             <p class="small">Max bid by {{ bid_user }}</p>
           
             <!-- Watchlist button -->
-            {% if user.is_authenticated and user.id != listing.user.id %}
+            {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
             <form action="{% url 'watchlist' %}" method="post">
                 {% csrf_token %}
                 {% if on_watchlist %}
@@ -31,7 +38,7 @@
             </form>
             {% endif %}
 
-            {% if user.is_authenticated and user.id != listing.user.id %}
+            {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
             <form action="{% url 'bids' %}" method="post">
                 {% csrf_token %}
                 <input type="number" required min="{{ max_bid }}" name="price">
@@ -39,10 +46,6 @@
                 <input class="btn btn-primary" type="submit" value="Make bid">
                 
             </form>
-            {% endif %}
-
-            {% if listing.closed == True %}
-                <div class="alert alert-danger">Listing closed. Buyer: {{ bid_user }}</div>
             {% endif %}
 
             {% if user.is_authenticated and user.id == listing.user.id %}

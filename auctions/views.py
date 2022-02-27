@@ -155,8 +155,8 @@ def new(request):
             category = Category.objects.get(category=form.cleaned_data["category"])
 
             listing = Listing(title = title, description = description,
-            starting_bid = starting_bid,image_url = image_url, 
-            category = category, user = user)
+                starting_bid = starting_bid,image_url = image_url, 
+                category = category, user = user)
 
             listing.save()
             return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
@@ -203,6 +203,35 @@ def watchlist(request):
 
         return render(request, "auctions/watchlist.html", {
             "listings": listings})
+
+
+@login_required(login_url=login_view)
+def user_page(request):
+
+    user_id = request.user.id
+    user_bids_id = User.objects.get(pk=request.user.id).bid_user.values_list("listing")
+
+    selling = Listing.objects.filter(user = user_id, closed= False)
+    closed = Listing.objects.filter(user = user_id, closed= True)
+    open_bids = Listing.objects.filter(id__in=user_bids_id, closed=False)
+    closed_bids = Listing.objects.filter(id__in=user_bids_id, closed=True)
+
+    won_bids = list()
+
+    for listing in closed_bids:
+        max_bid = listing.bids.order_by('-price').first()
+
+        if max_bid.user.id == user_id:
+            won_bids.append(listing)
+    
+
+    return render(request, "auctions/user.html", {
+        "selling": selling,
+        "closed": closed,
+        "won": won_bids,
+        "bid": open_bids
+
+        })
 
 
 def categories(request):
