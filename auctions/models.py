@@ -20,7 +20,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField ()
     starting_bid = models.FloatField()
-    image_url = models.URLField(blank=True, null=True)
+    image_url = models.URLField(default="https://programacion.net/files/article/20161110041116_image-not-found.png")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listing_category",  blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_author")
     date = models.DateTimeField(auto_now_add=True)
@@ -46,7 +46,7 @@ class Comment(models.Model):
 class Bid(models.Model):
     price = models.FloatField()
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_user", blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_user")
 
     def __str__(self):
         return f"{self.user}: {self.listing}: {self.price}"

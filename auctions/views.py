@@ -12,7 +12,7 @@ from .models import User, Listing, Comment, Bid, Category, Watchlist
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(closed = False)})
+        "listings": Listing.objects.filter(closed = False).order_by("-date")})
 
 
 def listing_view(request, listing_id):
@@ -202,7 +202,7 @@ def watchlist(request):
         listings = Listing.objects.filter(id__in=watchlist_listing_ids, closed=False)
 
         return render(request, "auctions/watchlist.html", {
-            "listings": listings})
+            "listings": listings.order_by("-date")})
 
 
 @login_required(login_url=login_view)
@@ -245,7 +245,7 @@ def category_listings(request, category):
 
     listings = Listing.objects.filter(category__category = category)
     return render(request, "auctions/index.html", {
-        "listings": listings})
+        "listings": listings.order_by("-date")})
 
 
 @login_required(login_url=login_view)

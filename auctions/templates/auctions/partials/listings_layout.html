@@ -1,24 +1,26 @@
-<ul class="list-unstyled">
-
-    {% for listing in listings %}
-    <li class="media">
-
-        <div class="thumbnail">
-            <img src="{{listing.image_url}}" class="mr-3 img-thumbnail" alt="">
-        </div>
-        <div class="media-body">
-            <a href="{% url 'listing_view' listing.id %}">
-                <h5 class="mt-0 mb-1">{{ listing.title }}</h5>
-            </a>
-          <p>{{ listing.descripton_firts_p }}</p>
-          <h3><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h3>
-          <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
-        </div>
-    </li>
-    {% empty %}
+{% if not listings %}
     <div class="alert alert-warning">
         No listings found
-       </div>
+    </div>
+{% endif %}
+
+<div class="listing-group">
+
+    {% for listing in listings %}
+
+        <div class="listing-box">
+            <div class="listing-img-box">
+                <img src="{{listing.image_url}}" class="listing-img" alt="Listing Image">
+            </div>
+            <div class="media-body">
+                <a href="{% url 'listing_view' listing.id %}">
+                    <h6 class="mt-0 mb-1">{{ listing.title }}</h6>
+                </a>
+              <h5><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h5>
+              <p class="small">Added by {{ listing.user }} on {{ listing.date|date:"M d, Y" }}</p>
+            </div>
+        </div>
+        
     {% endfor %}
-    
-</ul>
+
+</div>

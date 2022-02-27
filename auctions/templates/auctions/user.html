@@ -1,28 +1,29 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
+<h2 class="title_page">User Profile</h2>
+<hr>
     <div class="sub-title">
-        <h2>Selling</h2>
+        <h5>Selling</h5>
     </div>
 
     {% include "auctions/partials/listings_layout.html" with listings=selling %}
 
     <div class="sub-title">
-        <h2>Closed</h2>
+        <h5>Closed</h5>
     </div>
 
     {% include "auctions/partials/listings_layout.html" with listings=closed %}
 
 
     <div class="sub-title">
-        <h2>Bid</h2>
+        <h5>Active Bids</h5>
     </div>
 
     {% include "auctions/partials/listings_layout.html" with listings=bid %}
 
     <div class="sub-title">
-        <h2>Won</h2>
+        <h5>Bids Won</h5>
     </div>
 
     {% include "auctions/partials/listings_layout.html" with listings=won %}

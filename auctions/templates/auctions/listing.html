@@ -11,11 +11,11 @@
         {% endif %}
 
         <div class="d-flex justify-content-center">
-            <img src="{{listing.image_url}}" class="img-fluid " alt="">
+            <img src="{{listing.image_url}}" class="listing-page-img" alt="">
         </div>
 
         <div>
-            <h2>{{ listing.title }}</h2>
+            <h2 class="title_page">{{ listing.title }}</h2>
             <p>{{ listing.description|linebreaks }}</p>
             <h3><span class="badge badge-warning">Price: ${{ max_bid }}</span></h3>
             <p class="small">Max bid by {{ bid_user }}</p>
@@ -63,7 +63,7 @@
         </div>
 
         <hr>
-        <h3>Comments</h3>
+        <h3 class="sub-title">Comments</h3>
         {% if user.is_authenticated %}
         <form action="{% url 'listing_view' listing.id %}" method="post">
             {% csrf_token %}
