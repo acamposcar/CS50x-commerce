@@ -44,11 +44,12 @@ class Comment(models.Model):
 
 
 class Bid(models.Model):
-    bid = models.FloatField()
+    price = models.FloatField()
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_user", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.listing}: {self.bid}"
+        return f"{self.user}: {self.listing}: {self.price}"
 
 
 class Watchlist(models.Model):

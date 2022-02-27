@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 
 from .forms import CreateListing, CreateComment
 from .models import User, Listing, Comment, Bid, Category, Watchlist
@@ -21,7 +22,20 @@ def listing_view(request, listing_id):
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
 
+
     comments = listing.comments.all()
+    try:
+        max_bid = listing.bids.order_by('-price')[0]
+        bid_price = max_bid.price
+        bid_user = max_bid.user
+    except IndexError:
+        bid_price = 0
+        bid_user=""
+
+
+
+    if bid_price == None or listing.starting_bid > bid_price:
+        bid_price = listing.starting_bid
 
     
     if request.user.is_authenticated:
@@ -30,9 +44,9 @@ def listing_view(request, listing_id):
         on_watchlist = False
 
     if request.method == "POST":
-        form = CreateComment(request.POST)
-        if form.is_valid() and request.user.is_authenticated:
-            content = form.cleaned_data["content"]
+        comment_form = CreateComment(request.POST)
+        if comment_form.is_valid() and request.user.is_authenticated:
+            content = comment_form.cleaned_data["content"]
             user = User.objects.get(pk=request.user.id)
             comment = Comment(content = content, user = user, listing = listing)
             comment.save()
@@ -40,13 +54,17 @@ def listing_view(request, listing_id):
         else:
             return render(request, "auctions/listing.html", {
                 "listing": listing,
+                "max_bid": bid_price,
+                "bid_user": bid_user,
                 "comments": comments,
-                "comment_form": form,
+                "comment_form": comment_form,
                 "on_watchlist": on_watchlist
         })
     else:
         return render(request, "auctions/listing.html", {
             "listing": listing,
+            "max_bid": bid_price,
+            "bid_user": bid_user,
             "comments": comments,
             "comment_form": CreateComment(),
             "on_watchlist": on_watchlist
@@ -168,4 +186,40 @@ def watchlist(request):
             "listings": listings})
 
 
- 
+def categories(request):
+    # TODO
+    listings = Listing.objects.filter(category=1)
+
+    return render(request, "auctions/categories.html", {
+        "listings": listings})
+
+
+@login_required(login_url=login_view)
+def bids(request):
+
+    if request.method == "POST":
+
+        new_bid = float(request.POST['price'])
+        listing_id = request.POST['listing_id']
+        user_id = request.user.id
+
+        user = User.objects.get(pk=user_id)
+        listing = Listing.objects.get(pk=listing_id)
+
+        try:
+            max_bid = listing.bids.order_by('-price')[0]
+            bid_price = max_bid.price
+
+        except IndexError:
+            bid_price = 0
+
+
+        starting_bid = listing.starting_bid
+
+        if new_bid <= bid_price or new_bid <= starting_bid:
+            return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))
+
+        bid = Bid(price = new_bid, user = user, listing = listing)
+        bid.save()
+
+    return HttpResponseRedirect(reverse("listing_view", kwargs={'listing_id':listing.id}))

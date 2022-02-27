@@ -10,7 +10,8 @@
         <div>
             <h2>{{ listing.title }}</h2>
             <p>{{ listing.description|linebreaks }}</p>
-            <h3><span class="badge badge-warning">Price: ${{ listing.starting_bid }}</span></h3>
+            <h3><span class="badge badge-warning">Price: ${{ max_bid }}</span></h3>
+            <p class="small">Max bid by {{ bid_user }}</p>
           
             <!-- Watchlist button -->
             {% if user.is_authenticated and user.id != listing.user.id %}
@@ -27,6 +28,16 @@
                 {% endif %}
 
                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            </form>
+            {% endif %}
+
+            {% if user.is_authenticated and user.id != listing.user.id %}
+            <form action="{% url 'bids' %}" method="post">
+                {% csrf_token %}
+                <input type="number" required min="{{ max_bid }}" name="price">
+                <input type="hidden" name="listing_id"  value="{{ listing.id }}">
+                <input class="btn btn-primary" type="submit" value="Make bid">
+                
             </form>
             {% endif %}
             <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
