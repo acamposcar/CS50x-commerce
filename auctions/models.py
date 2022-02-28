@@ -19,7 +19,9 @@ class Category(models.Model):
 class Listing(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField ()
-    starting_bid = models.FloatField()
+    starting_price = models.FloatField()
+    current_bid = models.FloatField(default=0)
+    current_bid_winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_winner", blank=True, null=True)
     image_url = models.URLField(default="https://programacion.net/files/article/20161110041116_image-not-found.png")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listing_category",  blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_author")

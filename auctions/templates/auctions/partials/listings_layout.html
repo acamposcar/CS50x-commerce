@@ -1,26 +1,50 @@
-{% if not listings %}
-    <div class="alert alert-warning">
-        No listings found
-    </div>
-{% endif %}
+{% if not listings %} 
+<div class="alert alert-warning"> No listings found </div>
+{% endif %} 
 
-<div class="listing-group">
+<div class="listing-grid">
 
-    {% for listing in listings %}
+    {% for listing in listings %} 
+    <div class="listing-box">
 
-        <div class="listing-box">
-            <div class="listing-img-box">
-                <img src="{{listing.image_url}}" class="listing-img" alt="Listing Image">
+        <div class="listing-img-box">
+            <img src="{{listing.image_url}}" class="listing-img" alt="Listing Image">
+        </div>
+
+        <div>
+            <a href="{% url 'listing_view' listing.id %}">
+                <h6 class="mt-0 mb-1">{{ listing.title|truncatechars:25 }}</h6>
+            </a>
+        </div>
+
+        <div class="listing-info-box">
+            <div class="listing-info-price">
+
+                {% if listing.starting_price > listing.current_bid %} 
+                <h4>${{ listing.starting_price }}</h4>
+                {% else %} 
+                <h4>${{ listing.current_bid }}</h4>
+                {% endif %} 
+
             </div>
-            <div class="media-body">
-                <a href="{% url 'listing_view' listing.id %}">
-                    <h6 class="mt-0 mb-1">{{ listing.title }}</h6>
-                </a>
-              <h5><span class="badge badge-secondary">Price: ${{ listing.starting_bid }}</span></h5>
-              <p class="small">Added by {{ listing.user }} on {{ listing.date|date:"M d, Y" }}</p>
+
+            {% if listing.category %} 
+            <div class="listing-info-category">
+                <a href="{% url 'category_listings' listing.category %}" class="badge badge-pill badge-primary">{{ listing.category }}</a>
             </div>
+            {% endif %}
+
+        </div>
+
+        <div>
+            <p class="listing-info-description">{{ listing.description|truncatechars:110 }}</p>
+        </div>
+
+        <div>
+            <p class="small">Added by {{ listing.user }} on {{ listing.date|date:"M d, Y" }}</p>
         </div>
         
-    {% endfor %}
+    </div>
+    {% endfor %} 
 
 </div>

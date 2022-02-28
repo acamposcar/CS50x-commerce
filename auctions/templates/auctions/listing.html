@@ -17,8 +17,18 @@
         <div>
             <h2 class="title_page">{{ listing.title }}</h2>
             <p>{{ listing.description|linebreaks }}</p>
-            <h3><span class="badge badge-warning">Price: ${{ max_bid }}</span></h3>
-            <p class="small">Max bid by {{ bid_user }}</p>
+
+            {% if listing.starting_price > listing.current_bid %}
+                <h3>${{ listing.starting_price }}</h3>
+            {% else %}
+                <h3>${{ listing.current_bid }}</h3>
+            {% endif %}
+
+            {% if listing.current_bid_winner %}
+            <p class="small">Current bid made by {{ listing.current_bid_winner }}</p>
+            {% endif %}
+
+            
           
             <!-- Watchlist button -->
             {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
@@ -41,7 +51,7 @@
             {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
             <form action="{% url 'bids' %}" method="post">
                 {% csrf_token %}
-                <input type="number" required min="{{ max_bid }}" name="price">
+                <input type="number" required min="{{ listing.current_bid }}" name="price">
                 <input type="hidden" name="listing_id"  value="{{ listing.id }}">
                 <input class="btn btn-primary" type="submit" value="Make bid">
                 
@@ -86,11 +96,6 @@
             <dd class="col-sm-10">{{comment.content|linebreaks}}</dd>
           </dl>
     </div>
-        <!-- <p class="small">Created by {{ comment.user }} on {{ comment.date }}</p> -->
     {% endfor %}
-
-</div>
-
-    </ul>
     
 {% endblock %}
