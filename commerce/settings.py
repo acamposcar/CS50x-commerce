@@ -70,6 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'commerce.wsgi.application'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

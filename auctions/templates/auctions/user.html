@@ -3,29 +3,37 @@
 {% block body %}
 <h2 class="title_page">Hello <strong>{{ user.username }}</strong></h2>
 <hr>
-    <div class="sub-title">
-        <h4>Selling</h4>
+
+
+    <div class="card">
+        <h4 class="card-header">Selling</h4>
+        <div class="card-body">
+            {% include "auctions/partials/listings_layout.html" with listings=selling %}
+        </div>
     </div>
 
-    {% include "auctions/partials/listings_layout.html" with listings=selling %}
+
     
-    <div class="sub-title">
-        <h4>Closed</h4>
+    <div class="card">
+        <h4 class="card-header">Closed</h4>
+        <div class="card-body">
+            {% include "auctions/partials/listings_layout.html" with listings=closed %}
+        </div>
     </div>
 
-    {% include "auctions/partials/listings_layout.html" with listings=closed %}
 
-
-    <div class="sub-title">
-        <h4>Active Bids</h4>
+    <div class="card">
+        <h4 class="card-header">Active Bids</h4>
+        <div class="card-body">
+            {% include "auctions/partials/listings_layout.html" with listings=bid %}
+        </div>
     </div>
 
-    {% include "auctions/partials/listings_layout.html" with listings=bid %}
-
-    <div class="sub-title">
-        <h4>Bids Won</h4>
+    <div class="card">
+        <h4 class="card-header">Bids Won</h4>
+        <div class="card-body">
+            {% include "auctions/partials/listings_layout.html" with listings=won %}
+        </div>
     </div>
-
-    {% include "auctions/partials/listings_layout.html" with listings=won %}
     
 {% endblock %}

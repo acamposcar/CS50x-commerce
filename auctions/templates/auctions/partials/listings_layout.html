@@ -37,13 +37,13 @@
         </div>
 
         <div>
-            <p class="listing-info-description">{{ listing.description|truncatechars:110 }}</p>
+            <p class="listing-info-description">{{ listing.description|truncatechars:100 }}</p>
         </div>
 
         <div>
             <p class="small">Added by {{ listing.user }} on {{ listing.date|date:"M d, Y" }}</p>
         </div>
-        
+
     </div>
     {% endfor %} 
 

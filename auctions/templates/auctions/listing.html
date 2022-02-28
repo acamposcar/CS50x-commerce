@@ -1,78 +1,115 @@
 {% extends "auctions/layout.html" %}
 
+{% load static %}
+
 {% block body %}
 
+<!------------------------------------------------------------------------------------
+                            BID CLOSED
+---------------------------------------------------------------------------------------->
+
         {% if listing.closed == True %}
-        {% if user.is_authenticated and user.id == bid_user.id %}
-        <div class="alert alert-success"><h3>You won the bid!</h3></div>
-        {% else %}
-        <div class="alert alert-danger"><h3>Listing closed. Buyer: {{ bid_user }}</h3></div>
-        {% endif %}
-        {% endif %}
-
-        <div class="d-flex justify-content-center">
-            <img src="{{listing.image_url}}" class="listing-page-img" alt="">
-        </div>
-
-        <div>
-            <h2 class="title_page">{{ listing.title }}</h2>
-            <p>{{ listing.description|linebreaks }}</p>
-
-            {% if listing.starting_price > listing.current_bid %}
-                <h3>${{ listing.starting_price }}</h3>
+            {% if user.is_authenticated and user.id == listing.current_bid_winner.id %}
+            <div class="alert alert-success">You won the bid!</div>
+            {% elif listing.current_bid_winner %}
+                <div class="alert alert-danger">Listing closed. The bid winner is: {{ listing.current_bid_winner }}</div>
             {% else %}
-                <h3>${{ listing.current_bid }}</h3>
+                <div class="alert alert-danger">Listing closed. Item not sold</div>
             {% endif %}
+        {% endif %}
 
-            {% if listing.current_bid_winner %}
-            <p class="small">Current bid made by {{ listing.current_bid_winner }}</p>
-            {% endif %}
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+         {% endfor %}
+        {% endif %}
 
-            
-          
-            <!-- Watchlist button -->
-            {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
-            <form action="{% url 'watchlist' %}" method="post">
-                {% csrf_token %}
-                {% if on_watchlist %}
-                <input class="btn btn-primary" type="submit" value="Remove from watchlist">  
-                <input type="hidden" name="add_watchlist" value="False">
+<!------------------------------------------------------------------------------------
+                            ITEM INFORMATION
+---------------------------------------------------------------------------------------->
+        <div class="listing-view-container">
+            <div class="listing-view-item">
+                <div class="d-flex justify-content-center">
+                    <img src="{{listing.image_url}}" class="listing-page-img" alt="">
+                </div>
+            </div>
 
-                {% else %}
-
-                <input class="btn btn-primary" type="submit" value="Add to watchlist">
-                <input type="hidden" name="add_watchlist" value="True">
-                {% endif %}
-
-                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-            </form>
-            {% endif %}
-
-            {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
-            <form action="{% url 'bids' %}" method="post">
-                {% csrf_token %}
-                <input type="number" required min="{{ listing.current_bid }}" name="price">
-                <input type="hidden" name="listing_id"  value="{{ listing.id }}">
-                <input class="btn btn-primary" type="submit" value="Make bid">
+            <div class="listing-view-item">
                 
-            </form>
-            {% endif %}
+                
+                <div class="listing-view-title">
 
-            {% if user.is_authenticated and user.id == listing.user.id %}
-            <form action="{% url 'close_listing' listing.id %}" method="post">
-                {% csrf_token %}
-                {% if listing.closed == False %}
-                <input class="btn btn-primary" type="submit" value="Close Listing">
+                    <h3>{{ listing.title }}</h3>
+
+                    <!-- Watchlist form -->
+                    {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
+                    <form action="{% url 'watchlist' %}" method="post">
+                        {% csrf_token %}
+                        {% if on_watchlist %}
+                        <input type="image" src="{% static 'auctions/heart_red.svg' %}">
+                        <input type="hidden" name="add_watchlist" value="False">
+
+                        {% else %}
+                        <input type="image" src="{% static 'auctions/heart.svg' %}">
+                        <input type="hidden" name="add_watchlist" value="True">
+                        {% endif %}
+
+                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    </form>
+                    {% endif %}
+
+                </div>
+
+                <div class="listing-view-price">
+                <!-- Price -->
+                    {% if listing.starting_price > listing.current_bid %}
+                        <h1>${{ listing.starting_price }}</h1>
+                    {% else %}
+                        <h1>${{ listing.current_bid }}</h1>
+                    {% endif %}
+
+
+
+                <!-- Bid form -->
+                    {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
+                    <form action="{% url 'bids' %}" method="post">
+                        {% csrf_token %}
+                        <input type="number" class="bid_field" placeholder="30.00" required min="{{ listing.current_bid }}" name="price">
+                        <input type="hidden" name="listing_id"  value="{{ listing.id }}">
+                        <input class="btn btn-primary bid_button" type="submit" value="Make bid">
+                        
+                    </form>
+                    {% endif %}
+                </div>
+                {% if listing.current_bid_winner %}
+                <p class="small">Last bid made by <strong>{{ listing.current_bid_winner }}</strong></p>
                 {% else %}
-                <input class="btn btn-primary" type="submit" value="Open Listing">
+                <p class="small">No bid has been placed yet</p>
+                
                 {% endif %}
-            </form>
-            {% endif %}
+                <p>{{ listing.description|linebreaks }}</p>
+                
+                <!-- Close/open listing form -->
+                {% if user.is_authenticated and user.id == listing.user.id %}
+                <form action="{% url 'close_listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {% if listing.closed == False %}
+                    <input class="btn btn-danger" type="submit" value="Close Listing">
+                    {% else %}
+                    <input class="btn btn-primary" type="submit" value="Open Listing">
+                    {% endif %}
+                </form>
+                {% endif %}
 
-            <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+                <p class="small">Created by {{ listing.user }} on {{ listing.date }}</p>
+            </div>
         </div>
+<!------------------------------------------------------------------------------------
+                            COMMENTS
+---------------------------------------------------------------------------------------->
 
-        <hr>
+
+ 
         <h3 class="sub-title">Comments</h3>
         {% if user.is_authenticated %}
         <form action="{% url 'listing_view' listing.id %}" method="post">

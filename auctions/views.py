@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-
+from django.contrib import messages
 from .forms import CreateListing, CreateComment
 from .models import User, Listing, Comment, Bid, Category, Watchlist
 
@@ -200,10 +200,16 @@ def watchlist(request):
         if add_watchlist == "True":
             watchlist = Watchlist(user=user, listing=listing)
             watchlist.save()
+            # return HttpResponseRedirect(reverse("watchlist"))
+            return HttpResponseRedirect(
+                reverse("listing_view", kwargs={"listing_id": listing.id})
+            )
         else:
             Watchlist.objects.filter(user=user, listing=listing).delete()
 
-        return HttpResponseRedirect(reverse("watchlist"))
+            return HttpResponseRedirect(
+                reverse("listing_view", kwargs={"listing_id": listing.id})
+            )
 
     else:
         watchlist_listing_ids = User.objects.get(
@@ -274,7 +280,7 @@ def bids(request):
         user = User.objects.get(pk=user_id)
         listing = Listing.objects.get(pk=listing_id)
 
-        if new_bid > listing.current_bid and new_bid >= listing.starting_price:
+        if new_bid > listing.current_bid and new_bid >= listing.starting_price and new_bid > 0:
 
             bid = Bid(price=new_bid, user=user, listing=listing)
             bid.save()
@@ -282,7 +288,13 @@ def bids(request):
             listing.current_bid_winner = user
             listing.current_bid = new_bid
             listing.save()
+            return HttpResponseRedirect(
+                reverse("listing_view", kwargs={"listing_id": listing.id})
+                )
+        else:
+            messages.error(request, 'The bid must be greater than the current price')
+            return HttpResponseRedirect(reverse("listing_view", kwargs={"listing_id": listing.id}) )
 
-        return HttpResponseRedirect(
-            reverse("listing_view", kwargs={"listing_id": listing.id})
-        )
+                
+    else:
+        return HttpResponse("Error 405: Not available")
