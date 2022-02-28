@@ -12,9 +12,9 @@
             {% if user.is_authenticated and user.id == listing.current_bid_winner.id %}
             <div class="alert alert-success">You won the bid!</div>
             {% elif listing.current_bid_winner %}
-                <div class="alert alert-danger">Listing closed. The bid winner is: {{ listing.current_bid_winner }}</div>
+                <div class="alert alert-danger">The auction has been closed. The winner is: {{ listing.current_bid_winner }}</div>
             {% else %}
-                <div class="alert alert-danger">Listing closed. Item not sold</div>
+                <div class="alert alert-danger">The auction has been closed without any bids.</div>
             {% endif %}
         {% endif %}
 
