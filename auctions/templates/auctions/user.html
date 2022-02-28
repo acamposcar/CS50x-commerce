@@ -4,7 +4,6 @@
 <h2 class="title_page">Hello <strong>{{ user.username }}</strong></h2>
 <hr>
 
-
     <div class="card">
         <h4 class="card-header">Selling</h4>
         <div class="card-body">
@@ -12,15 +11,12 @@
         </div>
     </div>
 
-
-    
     <div class="card">
         <h4 class="card-header">Closed</h4>
         <div class="card-body">
             {% include "auctions/partials/listings_layout.html" with listings=closed %}
         </div>
     </div>
-
 
     <div class="card">
         <h4 class="card-header">Active Bids</h4>

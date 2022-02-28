@@ -11,16 +11,21 @@ from .models import User, Listing, Comment, Bid, Category, Watchlist
 
 
 def index(request):
-
-    return render(
-        request,
-        "auctions/index.html",{
+    '''
+    Shows all open listings.
+    '''
+    
+    return render(request,"auctions/index.html",{
             "listings": Listing.objects.filter(closed=False).order_by("-date"),
-            "active":'home'}
-    )
+            "active":'home'
+            })
 
 
 def listing_view(request, listing_id):
+    '''
+    Shows detailed information for single listing.
+    POST method allowed to add new comments.
+    '''
 
     try:
         listing = Listing.objects.get(id=listing_id)
@@ -35,6 +40,7 @@ def listing_view(request, listing_id):
         on_watchlist = False
 
     if request.method == "POST":
+
         comment_form = CreateComment(request.POST)
         if comment_form.is_valid() and request.user.is_authenticated:
             content = comment_form.cleaned_data["content"]
@@ -71,6 +77,11 @@ def listing_view(request, listing_id):
 
 
 def login_view(request):
+    '''
+    Login page
+    POST method allowed to login user
+    '''
+
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -92,11 +103,20 @@ def login_view(request):
 
 
 def logout_view(request):
+    '''
+    Logout
+    '''
+
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
 
 def register(request):
+    '''
+    Register page
+    POST method allowed to create new user
+    '''
+
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
@@ -114,21 +134,31 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(
-                request,
-                "auctions/register.html",
-                {"message": "Username already taken.", "active":'register'},
-            )
+            return render(request, "auctions/register.html", {
+                "message": "Username already taken.", 
+                "active":'register'})
+
         login(request, user)
+
         return HttpResponseRedirect(reverse("index"))
+
     else:
         return render(request, "auctions/register.html", {"active":'register'})
 
 
 @login_required(login_url=login_view)
 def close_listing(request, listing_id):
+    '''
+    POST method allowed to open/close listings
+    '''
+
     if request.method == "POST":
-        listing = Listing.objects.get(pk=listing_id)
+
+        try:
+            listing = Listing.objects.get(pk=listing_id)
+        except Listing.DoesNotExist:
+            raise Http404("Listing not found.")
+
         listing_owner = listing.user.id
 
         if listing_owner == request.user.id:
@@ -139,14 +169,18 @@ def close_listing(request, listing_id):
                 listing.closed = False
                 listing.save()
             return HttpResponseRedirect(
-                reverse("listing_view", kwargs={"listing_id": listing.id})
-            )
+                reverse("listing_view", kwargs={"listing_id": listing.id}))
 
     return HttpResponse("Error 405: Not available")
 
 
 @login_required(login_url=login_view)
 def new(request):
+    '''
+    New listing page.
+    POST method allowed to create new listing.
+    '''
+
     if request.method == "POST":
         form = CreateListing(request.POST)
         if form.is_valid() and request.user.is_authenticated:
@@ -186,6 +220,10 @@ def new(request):
 
 @login_required(login_url=login_view)
 def watchlist(request):
+    '''
+    Watchlist page
+    POST method allowed to add/delete listing to watchlist
+    '''
     user_id = request.user.id
 
     if request.method == "POST":
@@ -224,7 +262,13 @@ def watchlist(request):
 
 @login_required(login_url=login_view)
 def user_page(request):
-
+    '''
+    User page. It shows listings in which the user has participated.
+    - Selling
+    - Closed
+    - Active Bids
+    - Won (closed bids)
+    '''
     user_id = request.user.id
     user_bids_id = User.objects.get(pk=request.user.id).bid_user.values_list("listing")
 
@@ -249,13 +293,17 @@ def user_page(request):
 
 
 def categories(request):
-
+    '''
+    Category page. Allows to select category
+    '''
     categories = Category.objects.all()
     return render(request, "auctions/categories.html", {"categories": categories, "active":'categories'})
 
 
 def category_listings(request, category):
-
+    '''
+    Category page. Shows articles grouped according to their category.
+    '''
     categories = Category.objects.all()
     listings = Listing.objects.filter(category__category=category)
 
@@ -270,6 +318,10 @@ def category_listings(request, category):
 
 @login_required(login_url=login_view)
 def bids(request):
+    '''
+    Handles logic to make bids
+    POST method allowed to create a new bid if it is bigger than existing bids
+    '''
 
     if request.method == "POST":
 
