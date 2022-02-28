@@ -305,11 +305,11 @@ def category_listings(request, category):
     Category page. Shows articles grouped according to their category.
     '''
     categories = Category.objects.all()
-    listings = Listing.objects.filter(category__category=category)
+    listings = Listing.objects.filter(closed=False, category__category=category).order_by("-date")
 
     return render(
         request, "auctions/categories.html", {
-            "listings": listings.order_by("-date"), 
+            "listings": listings, 
             "categories": categories,
             "current_category": category,
             "active":'categories'}

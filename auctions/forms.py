@@ -20,7 +20,7 @@ class CreateListing(forms.Form):
         attrs={"placeholder": "Title", "class":"form-control"}),  required=True)
     description = forms.CharField(widget=forms.Textarea(
         attrs={"placeholder": "Description", "rows":10, "class":"form-control"}), required=True)
-    starting_bid=forms.IntegerField(widget=forms.NumberInput(
+    starting_price=forms.IntegerField(widget=forms.NumberInput(
         attrs={"placeholder": "Starting Price", "class":"form-control"}),  required=True)
     image=forms.URLField(widget=forms.URLInput(
         attrs={"placeholder": "Image URL", "class":"form-control"}),  required=False)    
