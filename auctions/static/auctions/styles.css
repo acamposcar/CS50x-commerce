@@ -124,18 +124,23 @@ p {
 	align-items: center;
 }
 
+
 .listing-view-price {
 	display: flex;
 	gap: 30px;
 	align-items: center;
 }
 
-.bid_field {
-	width: 80px;
-	height: 35px;
+.listing-view-price input[type='number'] {
+	width: 100px;
+	height: 40px;
 	border-radius: 5px;
+	font-size: larger;
+	box-sizing: border-box;
 }
 
-.bid_button {
-	margin-bottom: 5px;
+.listing-view-price input[type='submit'] {
+	margin-bottom: 8px;
+	height: 40px;
+	box-sizing: border-box;
 }

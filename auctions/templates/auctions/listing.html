@@ -74,9 +74,11 @@
                     {% if user.is_authenticated and user.id != listing.user.id and listing.closed == False %}
                     <form action="{% url 'bids' %}" method="post">
                         {% csrf_token %}
-                        <input type="number" class="bid_field" placeholder="30.00" required min="{{ listing.current_bid }}" name="price">
+                        
+                        <input type="number" placeholder="30.00" required min="{{ listing.current_bid }}" name="price">
                         <input type="hidden" name="listing_id"  value="{{ listing.id }}">
-                        <input class="btn btn-primary bid_button" type="submit" value="Make bid">
+                        <input class="btn btn-primary" type="submit" value="Make bid">
+                        
                         
                     </form>
                     {% endif %}
