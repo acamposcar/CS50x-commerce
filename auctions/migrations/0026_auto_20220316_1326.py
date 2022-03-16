@@ -8,7 +8,7 @@ def create_categories(apps, schema_editor):
     Category(category='Sports').save()
     Category(category='Technology').save()
     Category(category='Clothes').save()
-
+    Category(category='Toys').save()
 
 class Migration(migrations.Migration):
 

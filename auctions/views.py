@@ -189,7 +189,11 @@ def new(request):
             starting_price = form.cleaned_data["starting_price"]
             user = User.objects.get(pk=request.user.id)
             image_url = form.cleaned_data["image"]
-            category = Category.objects.get(category=form.cleaned_data["category"])
+            
+            try:
+                category = Category.objects.get(category=form.cleaned_data["category"])
+            except Category.DoesNotExist:
+                category = None
 
             listing = Listing(
                 title=title,
