@@ -4,7 +4,6 @@ from django.db import migrations
 
 def create_categories(apps, schema_editor):
     Category = apps.get_model('auctions', 'Category')
-    Category(category='------').save()
     Category(category='Home').save()
     Category(category='Sports').save()
     Category(category='Technology').save()
