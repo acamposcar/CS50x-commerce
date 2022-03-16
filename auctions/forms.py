@@ -6,15 +6,6 @@ from .models import Category
 Create Listing: Users should be able to visit a page to create a new listing. They should be able to specify a title for the listing, a text-based description, and what the starting bid should be. Users should also optionally be able to provide a URL for an image for the listing and/or a category (e.g. Fashion, Toys, Electronics, Home, etc.).
 """
 
-choices = list()
-categories = Category.objects.all().reverse()
-for category in categories:
-    if str(category) == '------': #Empty category
-        choices.insert(0,(category.category, category.category.capitalize()))
-    else:
-        choices.append((category.category, category.category.capitalize()))
-
-
 class CreateListing(forms.Form):
     title = forms.CharField(widget=forms.TextInput(
         attrs={"placeholder": "Title", "class":"form-control"}),  required=True)
@@ -24,8 +15,8 @@ class CreateListing(forms.Form):
         attrs={"placeholder": "Starting Price", "class":"form-control"}),  required=True)
     image=forms.URLField(widget=forms.URLInput(
         attrs={"placeholder": "Image URL", "class":"form-control"}),  required=False)    
-    category=forms.ChoiceField(widget=forms.Select(
-        attrs={"class":"custom-select"}), choices=choices, required=False)
+    category=forms.ModelChoiceField(widget=forms.Select(
+        attrs={"class":"custom-select"}), queryset=Category.objects.all(), required=False)
 
 
 class CreateComment(forms.Form):
