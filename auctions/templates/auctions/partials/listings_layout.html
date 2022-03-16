@@ -1,10 +1,10 @@
-{% if not listings %} 
+{% if not listings %}
 <div class="alert alert-warning"> No listings found </div>
-{% endif %} 
+{% endif %}
 
 <div class="listing-grid">
 
-    {% for listing in listings %} 
+    {% for listing in listings %}
     <div class="listing-box">
 
         <div class="listing-img-box">
@@ -20,17 +20,18 @@
         <div class="listing-info-box">
             <div class="listing-info-price">
 
-                {% if listing.starting_price > listing.current_bid %} 
+                {% if listing.starting_price > listing.current_bid %}
                 <h4>${{ listing.starting_price }}</h4>
-                {% else %} 
+                {% else %}
                 <h4>${{ listing.current_bid }}</h4>
-                {% endif %} 
+                {% endif %}
 
             </div>
 
-            {% if listing.category %} 
+            {% if listing.category %}
             <div class="listing-info-category">
-                <a href="{% url 'category_listings' listing.category %}" class="badge badge-pill badge-primary">{{ listing.category }}</a>
+                <a href="{% url 'category_listings' listing.category %}"
+                    class="badge badge-pill badge-primary">{{listing.category }}</a>
             </div>
             {% endif %}
 
@@ -45,6 +46,6 @@
         </div>
 
     </div>
-    {% endfor %} 
+    {% endfor %}
 
 </div>
