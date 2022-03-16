@@ -133,5 +133,5 @@ if "DYNO" in os.environ:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-import django_heroku
-django_n_heroku.settings(locals(), staticfiles=False)
+import django_on_heroku
+django_on_heroku.settings(locals(), staticfiles=False)
