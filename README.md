@@ -6,3 +6,23 @@ Design an eBay-like e-commerce auction site that will allow users to post auctio
 ## Live Demo
 
 [Live Demo](https://acampos-cs50x-commerce.herokuapp.com/)
+
+
+## Installation
+
+1. Clone the project
+
+2. Install all necessary dependencies
+    ```python
+        pip3 install -r requirements.txt
+    ```
+
+3. Migrate database
+    ```python
+        python3 manage.py migrate
+    ```
+
+4. Run Django server
+    ```python
+        python3 manage.py runserver
+    ```
