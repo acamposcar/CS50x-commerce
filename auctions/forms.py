@@ -14,7 +14,7 @@ class CreateListing(forms.Form):
     starting_price=forms.IntegerField(widget=forms.NumberInput(
         attrs={"placeholder": "Starting Price", "class":"form-control"}),  required=True)
     image=forms.URLField(widget=forms.URLInput(
-        attrs={"placeholder": "Image URL", "class":"form-control"}),  required=False)    
+        attrs={"placeholder": "Image URL", "class":"form-control"}),  required=False, max_length=200)    
     category=forms.ModelChoiceField(widget=forms.Select(
         attrs={"class":"custom-select"}), queryset=Category.objects.all(), required=False)
 
