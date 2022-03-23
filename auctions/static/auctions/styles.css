@@ -92,6 +92,7 @@ a:hover {
 	display: block;
 	margin: auto;
 	object-fit: cover;
+	object-position: center;
 }
 
 .listing-img-box {
@@ -101,10 +102,13 @@ a:hover {
 }
 
 .listing-page-img {
-	max-height: 300px;
-	max-width: 100%;
+	max-height: 370px;
+	width: 100%;
 	display: block;
 	margin: auto;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 5px;
 }
 
 p {
