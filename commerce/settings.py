@@ -124,9 +124,10 @@ USE_TZ = True
 STATIC_URL = '/static/' 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# Heroku configuration
 if "DYNO" in os.environ:
     STATIC_ROOT = 'static'
-    ALLOWED_HOSTS = ['example.herokuapp.com']
+    ALLOWED_HOSTS = ['https://acampos-cs50x-commerce.herokuapp.com/']
     DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
