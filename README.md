@@ -15,6 +15,7 @@ Design an eBay-like e-commerce auction site that will allow users to post auctio
 
 ![GIF Demo](https://user-images.githubusercontent.com/9263545/159733239-6f850812-aea2-457b-9693-225c4f2992c1.gif)
 
+![Gif Responsive](https://user-images.githubusercontent.com/9263545/159737108-45ab9857-3880-4a4b-b31e-1d6de3c9a445.gif)
 
 ## Installation
 
