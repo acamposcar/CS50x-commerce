@@ -3,6 +3,8 @@ CS50x Web Programming - Project 2 - Commerce
 
 Design an eBay-like e-commerce auction site that will allow users to post auction listings, place bids on listings, comment on those listings, and add listings to a “watchlist.”
 
+![GIF Demo](https://user-images.githubusercontent.com/9263545/159733239-6f850812-aea2-457b-9693-225c4f2992c1.gif)
+
 [Specifications](https://cs50.harvard.edu/web/2020/projects/2/commerce/)
 
 [Specifications Screencast](https://www.youtube.com/watch?v=tjUzX2EC7hQ)
@@ -10,8 +12,6 @@ Design an eBay-like e-commerce auction site that will allow users to post auctio
 ## Live Demo
 
 [Live Demo](https://acampos-cs50x-commerce.herokuapp.com/)
-
-![GIF Demo](https://user-images.githubusercontent.com/9263545/159733239-6f850812-aea2-457b-9693-225c4f2992c1.gif)
 
 
 ## Installation
