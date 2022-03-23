@@ -75,7 +75,7 @@ a:hover {
 }
 
 .sub-title {
-	margin: 20px;
+	margin-top: 20px;
 }
 
 .listing-box {
@@ -84,7 +84,6 @@ a:hover {
 	border-width: thin;
 	border-color: rgb(226, 226, 226);
 	padding: 10px;
-	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 1px;
 }
 
 .listing-img {
@@ -127,6 +126,7 @@ p {
 	grid-template-columns: 10fr 1fr;
 	gap: 30px;
 	align-items: center;
+	margin-top: 1em;
 }
 
 
@@ -148,4 +148,8 @@ p {
 	margin-bottom: 8px;
 	height: 40px;
 	box-sizing: border-box;
+}
+
+.auction-page{
+	max-width: 700px;
 }
