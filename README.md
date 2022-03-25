@@ -10,6 +10,9 @@ Design an eBay-like e-commerce auction site that will allow users to post auctio
 ## Live Demo
 
 [Live Demo](https://acampos-cs50x-commerce.herokuapp.com/)
+Credentials to log-in:
+- User: user
+- Password: password
 
 ## Snapshots
 
